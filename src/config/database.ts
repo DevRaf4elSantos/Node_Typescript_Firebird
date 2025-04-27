@@ -3,7 +3,7 @@ import firebird from 'node-firebird';
 const dbOptions = {
     host : 'localhost',
     port : 3050,
-    database : 'C:\\bd\\    database.fdb',
+    database : 'C:\\bd\\database.fdb',
     user : 'SYSDBA',
     password : 'masterkey',
     lowercase_keys : false, // set to true to lowercase keys
