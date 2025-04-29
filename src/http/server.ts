@@ -15,7 +15,7 @@ app.get('/produtos', (req : Request, res : Response) =>  {
     
     fireBird.attach(dbOptions, function (err, db) {
         if(err){
-            return res.status(499).json(err + 'eRRO aQUI');
+            return res.status(500).json(err);
         }
         
         db.query('SELECT * FROM TAB_PRODUTOS', [], function(erro, result){
