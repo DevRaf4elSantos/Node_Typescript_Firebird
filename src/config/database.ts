@@ -3,7 +3,7 @@ import firebird from 'node-firebird';
 const dbOptions : firebird.Options = {
     host : 'localhost',
     port : 3050,
-    database : 'C:\\DATABASE.FDB',
+    database : 'C:\\BD\\DATABASE.FDB',
     user : 'SYSDBA',
     password : 'masterkey',
     lowercase_keys : false, // set to true to lowercase keys // default
@@ -12,5 +12,6 @@ const dbOptions : firebird.Options = {
     blobAsText : false, // set to true to get blob as text, only affects blob subtype 1
     encoding : 'UTF8',
 };
+
 
 export {dbOptions};
