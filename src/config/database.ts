@@ -33,4 +33,4 @@ function executeQuery(query : string, params : Array<object>, cb : (err : Error 
     })
 }
 
-export {dbOptions};
+export {executeQuery};

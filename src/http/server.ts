@@ -1,7 +1,6 @@
 import express, {Request, Response} from "express";
 import cors  from "cors";
-import { dbOptions } from "../config/database";
-import fireBird from 'node-firebird';
+
 
 const app = express();
 
