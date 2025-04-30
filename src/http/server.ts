@@ -20,10 +20,6 @@ app.get('/produtos', (req : Request, res : Response) =>  {
             res.status(200).json(result);
         }
     })
-    
-    
- 
-    
 });
 
 app.listen(3000, () => {
