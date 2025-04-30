@@ -13,22 +13,7 @@ app.use(cors())
 
 app.get('/produtos', (req : Request, res : Response) =>  {
     
-    fireBird.attach(dbOptions, function (err, db) {
-        if(err){
-            return res.status(500).json(err);
-        }
-        
-        db.query('SELECT * FROM TAB_PRODUTOS', [], function(erro, result){
-            db.detach();
-
-            if(erro){
-                return res.status(500).json(erro)
-            } else {
-                return res.status(200).json(result)
-            }
-
-        })
-    })
+    
     
     
  

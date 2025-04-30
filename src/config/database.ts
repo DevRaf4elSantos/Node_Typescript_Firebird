@@ -12,6 +12,25 @@ const dbOptions : firebird.Options = {
     blobAsText : false, // set to true to get blob as text, only affects blob subtype 1
     encoding : 'UTF8',
 };
+// Para usar um parametro que recebe uma função 
+function executeQuery(query : string, params : Array<object>, cb : (err : Error | null, result ?: Array<any> )=>{}){
 
+    firebird.attach(dbOptions, function (err, db) {
+        if(err){
+            return cb(err);
+        }
+        
+        db.query(query, params, function(erro, result){
+            db.detach();
+
+            if(erro){
+                return cb(err);
+            } else {
+                return cb(null, result);
+            }
+
+        })
+    })
+}
 
 export {dbOptions};
