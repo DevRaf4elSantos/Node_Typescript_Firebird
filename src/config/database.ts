@@ -13,7 +13,7 @@ const dbOptions : firebird.Options = {
     encoding : 'UTF8',
 };
 // Para usar um parametro que recebe uma função 
-function executeQuery(query : string, params : Array<object>, cb : (err : Error | null, result ?: Array<any> )=>{}){
+function executeQuery(query : string, params : Array<object>, cb : (err : Error | null, result ?: Array<any> )=>void){
 
     firebird.attach(dbOptions, function (err, db) {
         if(err){
