@@ -40,20 +40,44 @@ app.get('/produtos', (req : Request, res : Response) =>  {
     })
 });
 
-app.post('/produtos', (req : Request, res : Response) =>  {
-
-    let ssql : string = 'INSERT INTO TAB_PRODUTOS(PROD_DESCRICAO, VALOR) VALUES (?, ?)'
+app.patch('/produtos', (req : Request, res : Response) =>  {
     
-    executeQuery(ssql, [req.body.descricao, req.body.preco], function(err : Error | null, result ?: Array<any>) {
+    let ssql : string = '';
+    let params : string[] = [];
+    
+    if(req.query.id && req.body.descricao && req.body.preco){
+         ssql  = 'UPDATE TAB_PRODUTOS SET PROD_DESCRICAO = ?, VALOR = ? WHERE PROD_ID = ?'
+         params.push(req.body.descricao.toString().toUpperCase())
+         params.push(req.body.preco.toString().toUpperCase())
+         params.push(req.query.id.toString().toUpperCase())
+    
+    }
+    else if(req.query.id && req.body.descricao){
+        ssql  = 'UPDATE TAB_PRODUTOS SET PROD_DESCRICAO = ? WHERE PROD_ID = ?'
+        params.push(req.body.descricao.toString().toUpperCase())
+        params.push(req.query.id.toString().toUpperCase())
+    }
+    else if(req.query.id  && req.body.preco){
+        ssql  = 'UPDATE TAB_PRODUTOS SET VALOR = ? WHERE PROD_ID = ?'
+        params.push(req.body.preco.toString().toUpperCase())
+        params.push(req.query.id.toString().toUpperCase())
+    }
+    else if(req.query.id ){
+        res.json({ mensage : "Infelizmente não pudemos atualizar o valor solicitado"})
+    }
+    
+    executeQuery(ssql, params, function(err : Error | null, result ?: Array<any>) {
         if(err){
             return res.status(500).json(err);
         } else {
-            console.log('Chegou Aqui' + result)
-            res.status(201).json({Mensagem : 'Produto Criado Com Sucesso'})
+           
+            res.status(200).json({Mensagem : 'Produto Atualizado Com Sucesso'})
            
         }
     })
 });
+
+
 
 app.listen(3000, () => {
     console.log("Servidor online")
