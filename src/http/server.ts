@@ -12,8 +12,18 @@ app.use(express.json());
 app.use(cors())
 
 app.get('/produtos', (req : Request, res : Response) =>  {
+
+    let params : string[] = []
+    let ssql : string = 'SELECT * FROM TAB_PRODUTOS WHERE PROD_ID > 0 '
+
+    if(req.query.descricao ){
+        ssql += ' and PROD_DESCRICAO like ?';
+        params.push("%" + req.query.descricao.toString().toUpperCase() + "%")
+    }
+    console.log(params[0]);
+    console.log(ssql)
     
-    executeQuery('SELECT * FROM TAB_PRODUTOS', [], function(err : Error | null, result ?: Array<any>) {
+    executeQuery(ssql, params, function(err : Error | null, result ?: Array<any>) {
         if(err){
             return res.status(500).json(err);
         } else {
