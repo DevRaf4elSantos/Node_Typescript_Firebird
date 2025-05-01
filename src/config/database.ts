@@ -24,7 +24,7 @@ function executeQuery(query : string, params : string[], cb : (err : Error | nul
             db.detach();
 
             if(erro){
-                return cb(err);
+                return cb(erro);
             } else {
                 return cb(null, result);
             }

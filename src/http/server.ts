@@ -48,10 +48,9 @@ app.post('/produtos', (req : Request, res : Response) =>  {
         if(err){
             return res.status(500).json(err);
         } else {
-            // res.status(201).json({Mensagem : 'Objeto Criado Com Sucesso'})
-            if(result && result.length > 0 && result[0] !== undefined){
-                res.status(201).json({id_produto : result[0]});
-            }
+            console.log('Chegou Aqui' + result)
+            res.status(201).json({Mensagem : 'Produto Criado Com Sucesso'})
+           
         }
     })
 });
