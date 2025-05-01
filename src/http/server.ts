@@ -11,6 +11,9 @@ app.use(express.json());
 // Middleware - Cors
 app.use(cors())
 
+// Middleware
+app.use(express.urlencoded({ extended: true }))
+
 app.get('/produtos', (req : Request, res : Response) =>  {
 
     let params : string[] = []
@@ -27,13 +30,28 @@ app.get('/produtos', (req : Request, res : Response) =>  {
         ssql += ' and VALOR > ?';
         params.push(req.query.preco.toString())
     }
-
     
     executeQuery(ssql, params, function(err : Error | null, result ?: Array<any>) {
         if(err){
             return res.status(500).json(err);
         } else {
             res.status(200).json(result);
+        }   
+    })
+});
+
+app.post('/produtos', (req : Request, res : Response) =>  {
+
+    let ssql : string = 'INSERT INTO TAB_PRODUTOS(PROD_DESCRICAO, VALOR) VALUES (?, ?)'
+    
+    executeQuery(ssql, [req.body.descricao, req.body.preco], function(err : Error | null, result ?: Array<any>) {
+        if(err){
+            return res.status(500).json(err);
+        } else {
+            // res.status(201).json({Mensagem : 'Objeto Criado Com Sucesso'})
+            if(result && result.length > 0 && result[0] !== undefined){
+                res.status(201).json({id_produto : result[0]});
+            }
         }
     })
 });
