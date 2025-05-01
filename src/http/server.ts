@@ -16,12 +16,18 @@ app.get('/produtos', (req : Request, res : Response) =>  {
     let params : string[] = []
     let ssql : string = 'SELECT * FROM TAB_PRODUTOS WHERE PROD_ID > 0 '
 
+    // Quando for pegar(GET) baseado em texto lembre-se de colocar %
     if(req.query.descricao ){
         ssql += ' and PROD_DESCRICAO like ?';
         params.push("%" + req.query.descricao.toString().toUpperCase() + "%")
     }
-    console.log(params[0]);
-    console.log(ssql)
+    
+    // Quando for pegar(GET) UM VALOR NÚMERICO BUSQUE RETIRAR O % E ADICIONAR O TOSTRING
+    if(req.query.preco){
+        ssql += ' and VALOR > ?';
+        params.push(req.query.preco.toString())
+    }
+
     
     executeQuery(ssql, params, function(err : Error | null, result ?: Array<any>) {
         if(err){
