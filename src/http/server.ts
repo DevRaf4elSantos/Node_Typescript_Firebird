@@ -2,7 +2,6 @@ import express, {Request, Response} from "express";
 import cors  from "cors";
 import { executeQuery } from "../config/database";
 
-
 const app = express();
 
 // Middleware - Permite o uso do json
@@ -11,7 +10,7 @@ app.use(express.json());
 // Middleware - Cors
 app.use(cors())
 
-// Middleware
+// Middleware Recebendo Objetos Complexos e transformando em string
 app.use(express.urlencoded({ extended: true }))
 
 app.get('/produtos', (req : Request, res : Response) =>  {
@@ -25,7 +24,7 @@ app.get('/produtos', (req : Request, res : Response) =>  {
         params.push("%" + req.query.descricao.toString().toUpperCase() + "%")
     }
     
-    // Quando for pegar(GET) UM VALOR NÚMERICO BUSQUE RETIRAR O % E ADICIONAR O TOSTRING
+    // Quando for pegar(GET) UM VALOR NÚMERICO BUSQUE RETIRAR O % E ADICIONAR O to.String()
     if(req.query.preco){
         ssql += ' and VALOR > ?';
         params.push(req.query.preco.toString())
@@ -37,6 +36,21 @@ app.get('/produtos', (req : Request, res : Response) =>  {
         } else {
             res.status(200).json(result);
         }   
+    })
+});
+
+app.post('/produtos', (req : Request, res : Response) =>  {
+
+    let ssql : string = 'INSERT INTO TAB_PRODUTOS(PROD_DESCRICAO, VALOR) VALUES (?, ?)'
+    
+    executeQuery(ssql, [req.body.descricao, req.body.preco], function(err : Error | null, result ?: Array<any>) {
+        if(err){
+            return res.status(500).json(err);
+        } else {
+            console.log('Chegou Aqui' + result)
+            res.status(201).json({Mensagem : 'Produto Criado Com Sucesso'})
+           
+        }
     })
 });
 
