@@ -91,6 +91,20 @@ app.patch('/produtos', (req : Request, res : Response) =>  {
     })
 });
 
+app.delete('/produtos', (req : Request, res : Response) =>  {
+
+    let params : string[]= []
+    if(req.query.id){
+       params.push(req.query.id.toString())
+        executeQuery('DELETE FROM TAB_PRODUTOS WHERE PROD_ID = ?', params, function(err : Error | null, result ?: Array<any>) {
+            if(err){
+                return res.status(500).json(err);
+            } else {
+           
+                res.status(200).json({Mensagem : 'Produto Removido com Sucesso!'})
+        }
+    })}
+});
 
 
 app.listen(3000, () => {
