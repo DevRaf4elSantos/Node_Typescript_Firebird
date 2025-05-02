@@ -41,15 +41,13 @@ app.get('/produtos', (req : Request, res : Response) =>  {
 
 app.post('/produtos', (req : Request, res : Response) =>  {
 
-    let ssql : string = 'INSERT INTO TAB_PRODUTOS(PROD_DESCRICAO, VALOR) VALUES (?, ?) RE'
+    let ssql : string = 'INSERT INTO TAB_PRODUTOS(PROD_DESCRICAO, VALOR) VALUES (?, ?)'
     
     executeQuery(ssql, [req.body.descricao, req.body.preco], function(err : Error | null, result ?: Array<any>) {
         if(err){
             return res.status(500).json(err);
         } else {
-            console.log('Chegou Aqui' + result)
-            res.status(201).json({Mensagem : 'Produto Criado Com Sucesso'})
-           
+            res.status(201).json({Mensagem : 'Produto Criado Com Sucesso'})           
         }
     })
 });
