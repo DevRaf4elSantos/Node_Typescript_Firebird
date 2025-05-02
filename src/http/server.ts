@@ -41,7 +41,7 @@ app.get('/produtos', (req : Request, res : Response) =>  {
 
 app.post('/produtos', (req : Request, res : Response) =>  {
 
-    let ssql : string = 'INSERT INTO TAB_PRODUTOS(PROD_DESCRICAO, VALOR) VALUES (?, ?)'
+    let ssql : string = 'INSERT INTO TAB_PRODUTOS(PROD_DESCRICAO, VALOR) VALUES (?, ?) RE'
     
     executeQuery(ssql, [req.body.descricao, req.body.preco], function(err : Error | null, result ?: Array<any>) {
         if(err){
@@ -100,10 +100,10 @@ app.delete('/produtos', (req : Request, res : Response) =>  {
             if(err){
                 return res.status(500).json(err);
             } else {
-           
                 res.status(200).json({Mensagem : 'Produto Removido com Sucesso!'})
+            }
         }
-    })}
+    )}
 });
 
 
