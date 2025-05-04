@@ -1,6 +1,6 @@
 import express, {Request, Response} from "express";
 import cors  from "cors";
-import { executeQuery } from "../config/database";
+import { executeQuery,firebird, dbOptions } from "../config/database";
 
 const app = express();
 
@@ -41,13 +41,13 @@ app.get('/produtos', (req : Request, res : Response) =>  {
 
 app.post('/produtos', (req : Request, res : Response) =>  {
 
-    let ssql : string = 'INSERT INTO TAB_PRODUTOS(PROD_DESCRICAO, VALOR) VALUES (?, ?)'
+    let ssql : string = 'INSERT INTO TAB_PRODUTOS(PROD_DESCRICAO, VALOR) VALUES (?, ?) RETURNING PROD_ID'
     
     executeQuery(ssql, [req.body.descricao, req.body.preco], function(err : Error | null, result ?: Array<any>) {
         if(err){
             return res.status(500).json(err);
         } else {
-            res.status(201).json({Mensagem : 'Produto Criado Com Sucesso'})           
+            res.status(201).json({Mensagem : 'Produto Criado Com Sucesso' })
         }
     })
 });
@@ -104,6 +104,36 @@ app.delete('/produtos', (req : Request, res : Response) =>  {
     )}
 });
 
+app.post('/pedidos', (req : Request, res : Response) =>  {
+
+    let ssql : string = 'INSERT INTO TAB_PRODUTOS(PROD_DESCRICAO, VALOR) VALUES (?, ?) RETURNING PROD_ID'
+    
+    firebird.attach(dbOptions, function (err, db) {
+       if(err){
+            return res.status(500).json(err)
+       }     
+       db.transaction(firebird.ISOLATION_READ_COMMITTED, (err : Error | null, transaction ?: firebird.Transaction) => {
+           
+           if(err){
+               return res.status(500).json(err)
+           }
+           
+           try{
+                let ssql =  'insert into tab_pedidos(id_cliente, valor) values(?, ?) returning id_pedidos' ;
+           }catch(error){
+                
+           }
+       })
+    })
+
+    // executeQuery(ssql, [req.body.descricao, req.body.preco], function(err : Error | null, result ?: Array<any>) {
+    // if(err){
+    //         return res.status(500).json(err);
+    //     } else {
+    //         res.status(201).json({Mensagem : 'Produto Criado Com Sucesso'})
+    //     }
+    // })
+});
 
 app.listen(3000, () => {
     console.log("Servidor online")

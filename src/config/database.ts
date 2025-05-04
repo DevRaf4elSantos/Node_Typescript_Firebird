@@ -1,4 +1,6 @@
-import firebird from 'node-firebird';
+import { rejects } from 'assert';
+import { promises } from 'dns';
+import firebird, { Transaction } from 'node-firebird';
 
 const dbOptions : firebird.Options = {
     host : 'localhost',
@@ -33,4 +35,11 @@ function executeQuery(query : string, params : string[], cb : (err : Error | nul
     })
 }
 
-export {executeQuery};
+async function executeTransecctions(transaction : Transaction , ssql : string, params : string[]){
+    return new Promise ( (resolve: (value: unknown) => void, reject: (reason?: any) => void) => void{
+        transaction
+    
+    } )
+
+}
+export {executeQuery, firebird, dbOptions};
