@@ -1,6 +1,6 @@
 import express, {Request, Response} from "express";
 import cors  from "cors";
-import { executeQuery,firebird, dbOptions } from "../config/database";
+import { executeQuery,firebird, dbOptions, executeTransecctions } from "../config/database";
 
 const app = express();
 
@@ -120,6 +120,10 @@ app.post('/pedidos', (req : Request, res : Response) =>  {
            
            try{
                 let ssql =  'insert into tab_pedidos(id_cliente, valor) values(?, ?) returning id_pedidos' ;
+                
+                let ret = executeTransecctions(transaction, ssql, [req.body.id_cliente, req.body.valor])
+
+                let id = ret
            }catch(error){
                 
            }

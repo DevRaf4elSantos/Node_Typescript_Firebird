@@ -35,11 +35,16 @@ function executeQuery(query : string, params : string[], cb : (err : Error | nul
     })
 }
 
-async function executeTransecctions(transaction : Transaction , ssql : string, params : string[]){
-    return new Promise ( (resolve: (value: unknown) => void, reject: (reason?: any) => void) => void{
-        transaction
-    
+async function executeTransecctions(transaction : firebird.Transaction | undefined, ssql : string, params : string[]) : Promise<any>{
+    return new Promise ( (resolve: (value: unknown) => void, reject: (reason?: any) => void) => {
+        transaction?.query(ssql, params, function(err, result){
+            if(err){
+                return reject(err)
+            } else {
+                return resolve(result)
+            }
+        } )
     } )
 
 }
-export {executeQuery, firebird, dbOptions};
+export {executeQuery, firebird, dbOptions, executeTransecctions};
