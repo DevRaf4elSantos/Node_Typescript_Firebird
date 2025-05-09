@@ -105,13 +105,12 @@ app.delete('/produtos', (req : Request, res : Response) =>  {
 });
 
 app.post('/pedidos', (req : Request, res : Response) =>  {
-
-    let ssql : string = 'INSERT INTO TAB_PRODUTOS(PROD_DESCRICAO, VALOR) VALUES (?, ?) RETURNING PROD_ID'
     
     firebird.attach(dbOptions, function (err, db) {
        if(err){
-            return res.status(500).json(err)
-       }     
+            return res.status(500).json(err + '   ---- entrou aqui ')
+       }    
+
        db.transaction(firebird.ISOLATION_READ_COMMITTED, (err : Error | null, transaction ?: firebird.Transaction) => {
            
            if(err){
@@ -119,24 +118,19 @@ app.post('/pedidos', (req : Request, res : Response) =>  {
            }
            
            try{
-                let ssql =  'insert into tab_pedidos(id_cliente, valor) values(?, ?) returning id_pedidos' ;
+                let ssql =  'insert into tab_pedidos(id_cliente, valor_pedido) values(?, ?) returning id_pedidos' ;
                 
                 let ret = executeTransecctions(transaction, ssql, [req.body.id_cliente, req.body.valor])
+                if(ret != undefined ){
 
-                let id = ret
+                    let id = ret;
+                    console.log(id + '  entrou ')
+                }
            }catch(error){
                 
            }
        })
     })
-
-    // executeQuery(ssql, [req.body.descricao, req.body.preco], function(err : Error | null, result ?: Array<any>) {
-    // if(err){
-    //         return res.status(500).json(err);
-    //     } else {
-    //         res.status(201).json({Mensagem : 'Produto Criado Com Sucesso'})
-    //     }
-    // })
 });
 
 app.listen(3000, () => {

@@ -1,6 +1,4 @@
-import { rejects } from 'assert';
-import { promises } from 'dns';
-import firebird, { Transaction } from 'node-firebird';
+import firebird from 'node-firebird';
 
 const dbOptions : firebird.Options = {
     host : 'localhost',
