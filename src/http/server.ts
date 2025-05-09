@@ -41,13 +41,13 @@ app.get('/produtos', (req : Request, res : Response) =>  {
 
 app.post('/produtos', (req : Request, res : Response) =>  {
 
-    let ssql : string = 'INSERT INTO TAB_PRODUTOS(PROD_DESCRICAO, VALOR) VALUES (?, ?) RETURNING PROD_ID'
+    let ssql : string = 'INSERT INTO TAB_PRODUTOS(PROD_DESCRICAO, VALOR) VALUES (?, ?) returning PROD_ID'
     
     executeQuery(ssql, [req.body.descricao, req.body.preco], function(err : Error | null, result ?: Array<any>) {
         if(err){
             return res.status(500).json(err);
         } else {
-            res.status(201).json({Mensagem : 'Produto Criado Com Sucesso' })
+            res.status(201).json({ result })
         }
     })
 });
@@ -106,12 +106,12 @@ app.delete('/produtos', (req : Request, res : Response) =>  {
 
 app.post('/pedidos', (req : Request, res : Response) =>  {
     
-    firebird.attach(dbOptions, function (err, db) {
+     firebird.attach(dbOptions, function (err, db) {
        if(err){
             return res.status(500).json(err + '   ---- entrou aqui ')
        }    
 
-       db.transaction(firebird.ISOLATION_READ_COMMITTED, (err : Error | null, transaction ?: firebird.Transaction) => {
+        db.transaction(firebird.ISOLATION_READ_COMMITTED, async (err : Error | null, transaction ?: firebird.Transaction) => {
            
            if(err){
                return res.status(500).json(err)
@@ -120,12 +120,19 @@ app.post('/pedidos', (req : Request, res : Response) =>  {
            try{
                 let ssql =  'insert into tab_pedidos(id_cliente, valor_pedido) values(?, ?) returning id_pedidos' ;
                 
-                let ret = executeTransecctions(transaction, ssql, [req.body.id_cliente, req.body.valor])
+                let ret = await  executeTransecctions(transaction, ssql, [req.body.id_cliente, req.body.valor])
+                let id = ''; 
                 if(ret != undefined ){
-
-                    let id = ret;
-                    console.log(id + '  entrou ')
+                    id = ret.ID_PEDIDOS 
                 }
+                transaction?.commit((err)=>{
+                    if(err){
+                        transaction.rollback;
+                        res.send(500).json(err)
+                    } else {
+                        res.status(201).json({id})
+                    }
+                })
            }catch(error){
                 
            }
