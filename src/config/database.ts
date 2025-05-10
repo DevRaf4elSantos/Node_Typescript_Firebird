@@ -3,7 +3,7 @@ import firebird from 'node-firebird';
 const dbOptions : firebird.Options = {
     host : 'localhost',
     port : 3050,
-    database : 'C:\\BD\\DATABASE.FDB',
+    database : 'c:\\BD\\DATABASE.FDB',
     user : 'SYSDBA',
     password : 'masterkey',
     lowercase_keys : false, // set to true to lowercase keys // default
@@ -35,7 +35,7 @@ function executeQuery(query : string, params : string[], cb : (err : Error | nul
 
 async function executeTransecctions(transaction : firebird.Transaction | undefined, ssql : string, params : string[]) : Promise<any>{
     return new Promise ( (resolve: (value: unknown) => void, reject: (reason?: any) => void) => {
-        transaction?.query(ssql, params, function(err, result){
+        transaction?.query(ssql, params, function(err : Error, result){
             if(err){
                 return reject(err)
             } else {

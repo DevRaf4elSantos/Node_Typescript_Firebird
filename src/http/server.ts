@@ -1,6 +1,8 @@
 import express, {Request, Response} from "express";
 import cors  from "cors";
 import { executeQuery,firebird, dbOptions, executeTransecctions } from "../config/database";
+import e from "express";
+import { log } from "console";
 
 const app = express();
 
@@ -108,7 +110,7 @@ app.post('/pedidos', (req : Request, res : Response) =>  {
     
      firebird.attach(dbOptions, function (err, db) {
        if(err){
-            return res.status(500).json(err + '   ---- entrou aqui ')
+            return res.status(500).json(err)
        }    
 
         db.transaction(firebird.ISOLATION_READ_COMMITTED, async (err : Error | null, transaction ?: firebird.Transaction) => {
@@ -120,21 +122,41 @@ app.post('/pedidos', (req : Request, res : Response) =>  {
            try{
                 let ssql =  'insert into tab_pedidos(id_cliente, valor_pedido) values(?, ?) returning id_pedidos' ;
                 
-                let ret = await  executeTransecctions(transaction, ssql, [req.body.id_cliente, req.body.valor])
+                const ret = await  executeTransecctions(transaction, ssql, [req.body.id_cliente, req.body.valor])
                 let id = ''; 
+                
                 if(ret != undefined ){
                     id = ret.ID_PEDIDOS 
                 }
-                transaction?.commit((err)=>{
-                    if(err){
-                        transaction.rollback;
-                        res.send(500).json(err)
+
+                for(let i = 0; i < req.body.item.length; i++){
+                    let ssql2 = 'insert into tab_pedido_item(id_pedido, prod_id, qtd_produto, valor_unit, valor_total) values(?, ?, ?, ?, ?) returning id_item, id_pedido' ;
+                    
+                    const returno = await executeTransecctions(transaction, ssql2, [id, req.body.item[i].id_produto, req.body.item[i].qtd_produto, req.body.item[i].valor_unit, req.body.item[i].total_pedido ])
+                    
+                    console.log(returno)
+                    
+                }
+
+
+                transaction?.commit((error : Error)=>{
+                    console.log('entrou transaction commit')
+                    if(error){
+                        console.log('entrou transaction rollback')
+                        transaction.rollback();
+                        res.send(500).json(error +  '  entrou aqui ')
                     } else {
+
                         res.status(201).json({id})
                     }
                 })
+
+
            }catch(error){
+                console.log('Entrou no catch');
                 
+                transaction?.rollback()
+                res.status(500).json(error)
            }
        })
     })
