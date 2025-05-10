@@ -1,9 +1,10 @@
 import firebird from 'node-firebird';
+import * as path from 'path';
 
 const dbOptions : firebird.Options = {
     host : 'localhost',
     port : 3050,
-    database : 'c:\\BD\\DATABASE.FDB',
+    database :  path.join(__dirname, '..', 'db', 'DATABASE.FDB'),
     user : 'SYSDBA',
     password : 'masterkey',
     lowercase_keys : false, // set to true to lowercase keys // default
